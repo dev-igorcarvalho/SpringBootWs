@@ -1,23 +1,22 @@
 package br.com.igorcarvalhodev.springbootws.models;
 
-public class Curso {
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-	private Long id;
+import br.com.igorcarvalhodev.springbootws.models.abstracts.AbstractModel;
+
+@Entity
+@Table(name = "Cursos")
+public class Curso extends AbstractModel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 901474704154986963L;
+	
 	private String nome;
+	
 	private String categoria;
-
-	public Curso(String nome, String categoria) {
-		this.nome = nome;
-		this.categoria = categoria;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getNome() {
 		return nome;
