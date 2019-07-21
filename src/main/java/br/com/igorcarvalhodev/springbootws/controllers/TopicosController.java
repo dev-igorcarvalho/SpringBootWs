@@ -3,11 +3,13 @@ package br.com.igorcarvalhodev.springbootws.controllers;
 import java.net.URI;
 import java.util.List;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +46,7 @@ public class TopicosController {
 	 * ResponseEntity devolve como retorno uma uri(endpoint) e o recurso que acabou
 	 * de ser criado UriComponentsBuilder como parametro do metodo faz com que o
 	 * spring injete ele para ser usado automaticamente
+	 * 
 	 * @Valid faz com que o spring chame o bean validator
 	 * 
 	 */
@@ -56,6 +59,13 @@ public class TopicosController {
 
 		URI location = componentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
 		return ResponseEntity.created(location).body(topico);
+	}
+
+	@GetMapping("/{id}")
+	@Transactional
+	public TopicoDto detalhar(@PathVariable Long id) {
+		return new TopicoDto(repository.getOne(id));
+
 	}
 
 }
