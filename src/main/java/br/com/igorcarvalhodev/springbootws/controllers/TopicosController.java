@@ -3,6 +3,8 @@ package br.com.igorcarvalhodev.springbootws.controllers;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,11 +44,12 @@ public class TopicosController {
 	 * ResponseEntity devolve como retorno uma uri(endpoint) e o recurso que acabou
 	 * de ser criado UriComponentsBuilder como parametro do metodo faz com que o
 	 * spring injete ele para ser usado automaticamente
+	 * @Valid faz com que o spring chame o bean validator
 	 * 
 	 */
 
 	@PostMapping
-	public ResponseEntity<Topico> salvar(@RequestBody TopicoFormDto topicoForm,
+	public ResponseEntity<Topico> salvar(@RequestBody @Valid TopicoFormDto topicoForm,
 			UriComponentsBuilder componentsBuilder) {
 		Topico topico = topicoForm.converter(cursoRepository);
 		repository.save(topico);
