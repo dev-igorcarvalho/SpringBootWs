@@ -1,7 +1,12 @@
 package br.com.igorcarvalhodev.springbootws.models;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 import br.com.igorcarvalhodev.springbootws.models.abstracts.AbstractModel;
 
+@Entity
+@Table(name = "Usuario")
 public class Usuario extends AbstractModel {
 
 	/**

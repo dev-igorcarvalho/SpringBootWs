@@ -39,6 +39,11 @@ public class Topico extends AbstractModel {
 	
 	@OneToMany(mappedBy = "topico")
 	private List<Resposta> respostas = new ArrayList<>();
+	
+
+	public Topico() {
+		super();
+	}
 
 	public Topico(String titulo, String mensagem, Curso curso) {
 		this.titulo = titulo;

@@ -19,5 +19,5 @@ public interface TopicoRepository extends JpaRepository<Topico, Long>{
 
 	//Query feita manualmente com JPQL
 	@Query("SELECT t FROM Topico t WHERE t.curso.nome = :nomeCurso")
-	List<Topico> buscarCursoPorNome(@Param(":nomeCurso") String nomeCurso);
+	List<Topico> buscarCursoPorNome(@Param("nomeCurso") String nomeCurso);
 }
