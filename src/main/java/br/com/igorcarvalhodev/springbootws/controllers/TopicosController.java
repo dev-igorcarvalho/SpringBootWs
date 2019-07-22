@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.igorcarvalhodev.springbootws.models.Topico;
+import br.com.igorcarvalhodev.springbootws.models.dtos.DetalhesDoTopicoDto;
 import br.com.igorcarvalhodev.springbootws.models.dtos.TopicoDto;
 import br.com.igorcarvalhodev.springbootws.models.dtos.TopicoFormDto;
 import br.com.igorcarvalhodev.springbootws.repositories.CursoRepository;
@@ -63,8 +64,8 @@ public class TopicosController {
 
 	@GetMapping("/{id}")
 	@Transactional
-	public TopicoDto detalhar(@PathVariable Long id) {
-		return new TopicoDto(repository.getOne(id));
+	public DetalhesDoTopicoDto detalhar(@PathVariable Long id) {
+		return new DetalhesDoTopicoDto(repository.getOne(id));
 
 	}
 
