@@ -2,6 +2,7 @@ package br.com.igorcarvalhodev.springbootws.controllers;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -66,11 +67,19 @@ public class TopicosController {
 		return ResponseEntity.created(location).body(topico);
 	}
 
+	/*
+	 * Usando Optional<> do java 8 para fazer tratamento caso nao exista o recurso
+	 * no banco
+	 */
 	@GetMapping("/{id}")
 	@Transactional
-	public DetalhesDoTopicoDto detalhar(@PathVariable Long id) {
-		return new DetalhesDoTopicoDto(repository.getOne(id));
-
+	public ResponseEntity<DetalhesDoTopicoDto> detalhar(@PathVariable Long id) {
+		Optional<Topico> topico = repository.findById(id);
+		if (topico.isPresent()) {
+			return ResponseEntity.ok(new DetalhesDoTopicoDto(topico.get()));
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	/*
