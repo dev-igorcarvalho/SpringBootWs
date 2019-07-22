@@ -8,9 +8,11 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +22,7 @@ import br.com.igorcarvalhodev.springbootws.models.Topico;
 import br.com.igorcarvalhodev.springbootws.models.dtos.DetalhesDoTopicoDto;
 import br.com.igorcarvalhodev.springbootws.models.dtos.TopicoDto;
 import br.com.igorcarvalhodev.springbootws.models.dtos.TopicoFormDto;
+import br.com.igorcarvalhodev.springbootws.models.dtos.TopicoUpdateDto;
 import br.com.igorcarvalhodev.springbootws.repositories.CursoRepository;
 import br.com.igorcarvalhodev.springbootws.repositories.TopicoRepository;
 
@@ -52,6 +55,7 @@ public class TopicosController {
 	 * 
 	 */
 
+	@Transactional
 	@PostMapping
 	public ResponseEntity<Topico> salvar(@RequestBody @Valid TopicoFormDto topicoForm,
 			UriComponentsBuilder componentsBuilder) {
@@ -67,6 +71,26 @@ public class TopicosController {
 	public DetalhesDoTopicoDto detalhar(@PathVariable Long id) {
 		return new DetalhesDoTopicoDto(repository.getOne(id));
 
+	}
+
+	/*
+	 * @Transactional ao fim da execução se não houver erros ele automaticamente
+	 * comita as modificações da entidade no banco
+	 * 
+	 */
+	@Transactional
+	@PutMapping("/{id}")
+	public ResponseEntity<TopicoDto> editar(@PathVariable Long id, @RequestBody @Valid TopicoUpdateDto topicoUpdateDto,
+			UriComponentsBuilder componentsBuilder) {
+		Topico topico = topicoUpdateDto.update(id, repository);
+		return ResponseEntity.ok(new TopicoDto(topico));
+	}
+
+	@Transactional
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deletar(@PathVariable Long id) {
+		repository.deleteById(id);
+		return ResponseEntity.ok("Topico removido com sucesso");
 	}
 
 }
