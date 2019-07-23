@@ -8,6 +8,10 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -37,8 +42,32 @@ public class TopicosController {
 	@Autowired
 	CursoRepository cursoRepository;
 
+	/*
+	 * @RequestParam para receber valores por param get na requisiçao. Pageable
+	 * interface do spring que faz os ajustes de paginaçao. Page classe generic do
+	 * spring que trabalha com entidades e paginaçao
+	 * 
+	 * @Params Page = numero da pagina, size = quantidade de intes exibidos,
+	 * Direction = ascendente/descendente, ordenarPor = atributo da entidade que vai
+	 * ser usado pra ordenaçao
+	 */
+
+	@GetMapping("/filtrar")
+	public Page<TopicoDto> listarComFiltros(@RequestParam(required = false) String nomeCurso, @RequestParam int page,
+			@RequestParam int size, @RequestParam String ordenarPor) {
+		Pageable paginacao = PageRequest.of(page, size, Direction.ASC, ordenarPor);
+
+		if (nomeCurso != null && !nomeCurso.isBlank() && !nomeCurso.isEmpty()) {
+			Page<Topico> topicos = repository.findByCurso_Nome(nomeCurso, paginacao);
+			return TopicoDto.converter(topicos);
+		} else {
+			Page<Topico> topicos = repository.findAll(paginacao);
+			return TopicoDto.converter(topicos);
+		}
+	}
+
 	@GetMapping
-	public List<TopicoDto> listar(String nomeCurso) {
+	public List<TopicoDto> listar(@RequestParam(required = false) String nomeCurso) {
 		if (nomeCurso != null && !nomeCurso.isBlank() && !nomeCurso.isEmpty()) {
 			return TopicoDto.converter(repository.findByCurso_Nome(nomeCurso));
 		} else {
