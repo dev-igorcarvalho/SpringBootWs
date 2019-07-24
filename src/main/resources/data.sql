@@ -1,5 +1,5 @@
 -- o spring roda no startup as sqls desse arquivo automaticamente
-INSERT INTO springBoot.usuario(nome, email, senha) VALUES('Aluno', 'aluno@email.com', '123456');
+INSERT INTO springBoot.usuario(nome, email, senha) VALUES('Aluno', 'aluno@email.com', '$2a$10$TDvDs8/RQCKGRzrQVZmVZeIQr8K6WZTxtwN/Fipe.GFuNJVlzm11u');
 
 INSERT INTO springBoot.cursos(nome, categoria) VALUES('Spring Boot', 'Programação');
 INSERT INTO springBoot.cursos(nome, categoria) VALUES('HTML 5', 'Front-end');
