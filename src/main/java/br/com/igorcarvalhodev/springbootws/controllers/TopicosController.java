@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,7 @@ import br.com.igorcarvalhodev.springbootws.models.dtos.TopicoFormDto;
 import br.com.igorcarvalhodev.springbootws.models.dtos.TopicoUpdateDto;
 import br.com.igorcarvalhodev.springbootws.repositories.CursoRepository;
 import br.com.igorcarvalhodev.springbootws.repositories.TopicoRepository;
+import net.bytebuddy.agent.builder.AgentBuilder.Default.Transformation.Resolution.Sort;
 
 @RestController
 @RequestMapping("/topicos")
@@ -43,6 +45,8 @@ public class TopicosController {
 	CursoRepository cursoRepository;
 
 	/*
+	 * Usando o pageable programaticamente, controlado pelo programador
+	 * 
 	 * @RequestParam para receber valores por param get na requisiçao. Pageable
 	 * interface do spring que faz os ajustes de paginaçao. Page classe generic do
 	 * spring que trabalha com entidades e paginaçao
@@ -52,10 +56,40 @@ public class TopicosController {
 	 * ser usado pra ordenaçao
 	 */
 
-	@GetMapping("/filtrar")
+//	@GetMapping("/filtrar") mapping comentado para evitar o rastreio dele pelo spring
 	public Page<TopicoDto> listarComFiltros(@RequestParam(required = false) String nomeCurso, @RequestParam int page,
 			@RequestParam int size, @RequestParam String ordenarPor) {
 		Pageable paginacao = PageRequest.of(page, size, Direction.ASC, ordenarPor);
+
+		if (nomeCurso != null && !nomeCurso.isBlank() && !nomeCurso.isEmpty()) {
+			Page<Topico> topicos = repository.findByCurso_Nome(nomeCurso, paginacao);
+			return TopicoDto.converter(topicos);
+		} else {
+			Page<Topico> topicos = repository.findAll(paginacao);
+			return TopicoDto.converter(topicos);
+		}
+	}
+
+	/*
+	 * Usando o pageable automatico, controlado pelo spring, vira url get param
+	 * 
+	 * @RequestParam para receber valores por param get na requisiçao. Pageable
+	 * interface do spring que faz os ajustes de paginaçao. Page classe generic do
+	 * spring que trabalha com entidades e paginaçao
+	 * 
+	 * passar os params via url<url?page=0&size=4&sort=titulo.asc> page = numero da
+	 * pagina a ser exibida size = quantidade de itens a serem exibidos por pagina
+	 * sort = campo da entidade pelo qual o spring vai ordenar + ,asc ou ,desc obs:
+	 * o param sort é opcional e pode se repitir quantas vezes forem necessarias
+	 * para fazer ordenaçao por multiplos campos
+	 * 
+	 * @PageableDefault faz com que existam params default caso o param não seja
+	 * forneceido via url
+	 */
+
+	@GetMapping("/filtrar")
+	public Page<TopicoDto> listarComFiltros(@RequestParam(required = false) String nomeCurso,
+			@PageableDefault(size = 4, sort = "id", direction = Direction.DESC) Pageable paginacao) {
 
 		if (nomeCurso != null && !nomeCurso.isBlank() && !nomeCurso.isEmpty()) {
 			Page<Topico> topicos = repository.findByCurso_Nome(nomeCurso, paginacao);
