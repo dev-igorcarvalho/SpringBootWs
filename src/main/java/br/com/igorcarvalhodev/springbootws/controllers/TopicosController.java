@@ -8,6 +8,8 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +34,6 @@ import br.com.igorcarvalhodev.springbootws.models.dtos.TopicoFormDto;
 import br.com.igorcarvalhodev.springbootws.models.dtos.TopicoUpdateDto;
 import br.com.igorcarvalhodev.springbootws.repositories.CursoRepository;
 import br.com.igorcarvalhodev.springbootws.repositories.TopicoRepository;
-import net.bytebuddy.agent.builder.AgentBuilder.Default.Transformation.Resolution.Sort;
 
 @RestController
 @RequestMapping("/topicos")
@@ -83,8 +84,8 @@ public class TopicosController {
 	 * o param sort é opcional e pode se repitir quantas vezes forem necessarias
 	 * para fazer ordenaçao por multiplos campos
 	 * 
-	 * @PageableDefault faz com que existam params default caso o param não seja
-	 * forneceido via url
+	 * @PageableDefault faz com que existam params default caso algum ou nehum o
+	 * param seja forneceido via url
 	 */
 
 	@GetMapping("/filtrar")
@@ -100,6 +101,7 @@ public class TopicosController {
 		}
 	}
 
+	@Cacheable(value = "listaTopicos") // guarda o resultado em cache
 	@GetMapping
 	public List<TopicoDto> listar(@RequestParam(required = false) String nomeCurso) {
 		if (nomeCurso != null && !nomeCurso.isBlank() && !nomeCurso.isEmpty()) {
@@ -121,6 +123,7 @@ public class TopicosController {
 
 	@Transactional
 	@PostMapping
+	@CacheEvict(value = "listaTopicos") // apaga o cache escolhido
 	public ResponseEntity<Topico> salvar(@RequestBody @Valid TopicoFormDto topicoForm,
 			UriComponentsBuilder componentsBuilder) {
 		Topico topico = topicoForm.converter(cursoRepository);
@@ -152,6 +155,7 @@ public class TopicosController {
 	 */
 	@Transactional
 	@PutMapping("/{id}")
+	@CacheEvict(value = "listaTopicos") // apaga o cache escolhido
 	public ResponseEntity<TopicoDto> editar(@PathVariable Long id, @RequestBody @Valid TopicoUpdateDto topicoUpdateDto,
 			UriComponentsBuilder componentsBuilder) {
 		Topico topico = topicoUpdateDto.update(id, repository);
@@ -160,6 +164,7 @@ public class TopicosController {
 
 	@Transactional
 	@DeleteMapping("/{id}")
+	@CacheEvict(value = "listaTopicos") // apaga o cache escolhido
 	public ResponseEntity<String> deletar(@PathVariable Long id) {
 		repository.deleteById(id);
 		return ResponseEntity.ok("Topico removido com sucesso");
