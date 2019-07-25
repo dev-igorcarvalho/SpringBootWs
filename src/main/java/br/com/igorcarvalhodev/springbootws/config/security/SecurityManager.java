@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import br.com.igorcarvalhodev.springbootws.repositories.UsuarioRepository;
 
 /*
  * Classe de configuração so springSecurity
@@ -23,7 +26,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityManager extends WebSecurityConfigurerAdapter {
 
 	@Autowired
+	TokenService tokenService;
+
+	@Autowired
 	private AutenticacaoService autenticacaoService;
+
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
 	/*
 	 * Fabrica o AuthenticationManager para ser injeto em dependencias do projeto
@@ -51,11 +60,13 @@ public class SecurityManager extends WebSecurityConfigurerAdapter {
 //		http.authorizeRequests().antMatchers(HttpMethod.GET, "/topicos").permitAll()
 //				.antMatchers(HttpMethod.GET, "/topicos/*").permitAll().anyRequest().authenticated().and().formLogin();
 
-//		Autenticação via token
+		// Autenticação via token
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/topicos").permitAll()
 				.antMatchers(HttpMethod.GET, "/topicos/*").permitAll().antMatchers(HttpMethod.POST, "/auth").permitAll()
 				.anyRequest().authenticated().and().csrf().disable().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.addFilterBefore(new AutenticacaoTonkenFilter(tokenService, usuarioRepository),
+						UsernamePasswordAuthenticationFilter.class);
 	}
 
 	// conviguraçoes de recursos estaticos
