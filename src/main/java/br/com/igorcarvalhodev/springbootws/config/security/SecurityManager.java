@@ -62,9 +62,9 @@ public class SecurityManager extends WebSecurityConfigurerAdapter {
 
 		// Autenticação via token
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/topicos").permitAll()
-				.antMatchers(HttpMethod.GET, "/topicos/*").permitAll().antMatchers(HttpMethod.POST, "/auth").permitAll()
-				.anyRequest().authenticated().and().csrf().disable().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.antMatchers(HttpMethod.GET, "/actuator/**").permitAll().antMatchers(HttpMethod.GET, "/topicos/*")
+				.permitAll().antMatchers(HttpMethod.POST, "/auth").permitAll().anyRequest().authenticated().and().csrf()
+				.disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.addFilterBefore(new AutenticacaoTonkenFilter(tokenService, usuarioRepository),
 						UsernamePasswordAuthenticationFilter.class);
 	}
