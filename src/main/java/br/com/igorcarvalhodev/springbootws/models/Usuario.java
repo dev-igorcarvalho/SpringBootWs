@@ -20,6 +20,7 @@ import br.com.igorcarvalhodev.springbootws.models.abstracts.AbstractModel;
 
 @Entity
 @Table(name = "Usuario")
+// implementa interface UserDetaisl pois o spring precisa dela para autenticacao
 public class Usuario extends AbstractModel implements UserDetails {
 
 	/**

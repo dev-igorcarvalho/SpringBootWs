@@ -21,6 +21,9 @@ public class AutenticacaoService implements UserDetailsService {
 	@Autowired
 	UsuarioRepository usuarioRepository;
 
+	/*
+	 * Verifica no banco se existe usuario e se o login e senha são validos
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
