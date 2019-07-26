@@ -72,8 +72,9 @@ public class SecurityManager extends WebSecurityConfigurerAdapter {
 	// conviguraçoes de recursos estaticos
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		// TODO Auto-generated method stub
-		super.configure(web);
+		// liberando o acesso as paginas de documentaç~ao do Swagger
+		web.ignoring().antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**",
+				"/swagger-resources/**");
 	}
 
 }
