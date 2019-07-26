@@ -14,8 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import br.com.igorcarvalhodev.springbootws.repositories.UsuarioRepository;
-
 /*
  * Classe de configuração so springSecurity
  * é obrigatorio o uso das anotations abaixo
@@ -30,9 +28,6 @@ public class SecurityManager extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AutenticacaoService autenticacaoService;
-
-	@Autowired
-	private UsuarioRepository usuarioRepository;
 
 	/*
 	 * Fabrica o AuthenticationManager para ser injeto em dependencias do projeto
@@ -65,7 +60,7 @@ public class SecurityManager extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/actuator/**").permitAll().antMatchers(HttpMethod.GET, "/topicos/*")
 				.permitAll().antMatchers(HttpMethod.POST, "/auth").permitAll().anyRequest().authenticated().and().csrf()
 				.disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.addFilterBefore(new AutenticacaoTonkenFilter(tokenService, usuarioRepository),
+				.addFilterBefore(new AutenticacaoTonkenFilter(tokenService),
 						UsernamePasswordAuthenticationFilter.class);
 	}
 

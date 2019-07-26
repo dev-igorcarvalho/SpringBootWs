@@ -28,6 +28,14 @@ public class Usuario extends AbstractModel implements UserDetails {
 	 */
 	private static final long serialVersionUID = 3716926018499781024L;
 
+	public List<Perfil> getPerfis() {
+		return perfis;
+	}
+
+	public void setPerfis(List<Perfil> perfis) {
+		this.perfis = perfis;
+	}
+
 	private String nome;
 	private String email;
 	private String senha;

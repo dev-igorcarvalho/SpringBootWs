@@ -12,16 +12,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import br.com.igorcarvalhodev.springbootws.models.Usuario;
-import br.com.igorcarvalhodev.springbootws.repositories.UsuarioRepository;
 
 public class AutenticacaoTonkenFilter extends OncePerRequestFilter {
 
 	private TokenService tokenService;
-	private UsuarioRepository repository;
 
-	public AutenticacaoTonkenFilter(TokenService tokenService, UsuarioRepository repository) {
+	public AutenticacaoTonkenFilter(TokenService tokenService) {
 		this.tokenService = tokenService;
-		this.repository = repository;
 	}
 
 	@Override
@@ -36,8 +33,8 @@ public class AutenticacaoTonkenFilter extends OncePerRequestFilter {
 	}
 
 	private void autenticarUsuario(String token) {
-		Long usuarioId = tokenService.getUsuarioId(token); // extrai o id do usuario do corpo do token
-		Usuario usuario = repository.findById(usuarioId).get(); // busca o usuario no banco
+		// Pega o usuario no token
+		Usuario usuario = tokenService.getUsuario(token);
 		// faz a autenticação usando o usuario , credenciais, e os perfis de acesso
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null,
 				usuario.getAuthorities());
